@@ -63,7 +63,7 @@ export function useLaunches() {
     ];
 
     setTimeout(() => {
-      setLaunches(mockLaunches);
+      setLaunches(mockLaunches.sort((a, b) => b.launchDate.getTime() - a.launchDate.getTime()));
       setIsLoading(false);
     }, 1000);
   }, []);
