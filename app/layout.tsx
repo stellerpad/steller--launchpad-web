@@ -10,8 +10,15 @@ import { Rocket } from 'lucide-react';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Stellar Launchpad',
-  description: 'Launch tokens on Stellar with vesting and airdrops',
+  title: 'Stellar Launchpad - Launch Tokens on Stellar',
+  description: 'Launch tokens on Stellar with built-in vesting schedules and airdrop campaigns. No coding required.',
+  keywords: 'stellar, blockchain, token launch, vesting, airdrop, defi, cryptocurrency',
+  authors: [{ name: 'Stellar Launchpad Team' }],
+  openGraph: {
+    title: 'Stellar Launchpad',
+    description: 'Launch tokens on Stellar with vesting and airdrops',
+    type: 'website',
+  },
 };
 
 function Header() {
