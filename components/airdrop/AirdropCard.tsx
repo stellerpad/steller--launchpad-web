@@ -52,7 +52,7 @@ export function AirdropCard({ campaign, tokenSymbol, onDistribute }: AirdropCard
             <span className="text-sm font-medium">{getStatusText()}</span>
           </div>
           <div className="text-lg font-semibold">
-            {tokenSymbol ? `${tokenSymbol} Airdrop` : 'Token Airdrop'}
+            {tokenSymbol ? `${tokenSymbol} Airdrop Campaign` : 'Token Airdrop Campaign'}
           </div>
           <div className="text-sm text-muted-foreground capitalize">
             {campaign.config.type} distribution
