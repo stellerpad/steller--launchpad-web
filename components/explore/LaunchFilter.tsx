@@ -16,19 +16,23 @@ export function LaunchFilter({ onFilterChange }: LaunchFilterProps) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [hasActiveFilters, setHasActiveFilters] = useState(false);
 
   const handleFilterChange = () => {
-    onFilterChange({
+    const filters = {
       search,
       startDate: startDate || undefined,
       endDate: endDate || undefined
-    });
+    };
+    onFilterChange(filters);
+    setHasActiveFilters(!!(search || startDate || endDate));
   };
 
   const clearFilters = () => {
     setSearch('');
     setStartDate('');
     setEndDate('');
+    setHasActiveFilters(false);
     onFilterChange({ search: '' });
   };
 
@@ -66,7 +70,7 @@ export function LaunchFilter({ onFilterChange }: LaunchFilterProps) {
             Advanced Filters
           </button>
           
-          {(search || startDate || endDate) && (
+          {hasActiveFilters && (
             <button
               onClick={clearFilters}
               className="text-sm text-primary hover:text-primary/80 transition-colors"
