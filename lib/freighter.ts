@@ -1,7 +1,11 @@
-import { isConnected, getPublicKey, signTransaction, getNetwork } from '@stellar/freighter-api';
+// Client-side freighter wallet utilities
+// Uses dynamic imports to avoid SSR issues
 
 export async function connectWallet() {
   try {
+    // Dynamically import freighter API
+    const { isConnected, getPublicKey, getNetwork } = await import('@stellar/freighter-api');
+    
     const isWalletConnected = await isConnected();
     if (!isWalletConnected) {
       throw new Error('Freighter wallet not found');
@@ -21,6 +25,8 @@ export async function connectWallet() {
 
 export async function signTransactionWithFreighter(xdr: string) {
   try {
+    // Dynamically import freighter API
+    const { signTransaction } = await import('@stellar/freighter-api');
     const result = await signTransaction(xdr);
     return result;
   } catch (error) {

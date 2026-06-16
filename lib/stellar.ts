@@ -1,14 +1,15 @@
-import { Server, Networks, Asset, Operation, TransactionBuilder, Keypair } from '@stellar/stellar-sdk';
+// Client-side stellar utilities
+// Note: Server instances should only be created on demand, not at module level
 
 export const NETWORKS = {
   testnet: {
-    server: new Server('https://horizon-testnet.stellar.org'),
-    networkPassphrase: Networks.TESTNET,
+    horizonUrl: 'https://horizon-testnet.stellar.org',
+    networkPassphrase: 'Test SDF Network ; September 2015',
     rpcUrl: 'https://soroban-testnet.stellar.org'
   },
   mainnet: {
-    server: new Server('https://horizon.stellar.org'),
-    networkPassphrase: Networks.PUBLIC,
+    horizonUrl: 'https://horizon.stellar.org',
+    networkPassphrase: 'Public Global Stellar Network ; September 2015',
     rpcUrl: 'https://soroban-rpc.stellar.org'
   }
 };
@@ -19,7 +20,10 @@ export function getNetwork(network: 'testnet' | 'mainnet') {
 
 export async function getAccountInfo(publicKey: string, network: 'testnet' | 'mainnet') {
   try {
-    const { server } = getNetwork(network);
+    // Dynamically import Stellar SDK only when needed
+    const { Server } = await import('@stellar/stellar-sdk');
+    const { horizonUrl } = getNetwork(network);
+    const server = new Server(horizonUrl);
     return await server.loadAccount(publicKey);
   } catch (error) {
     throw new Error('Failed to load account');

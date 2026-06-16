@@ -1,4 +1,6 @@
-import { Contract, SorobanRpc, Networks, TransactionBuilder, Operation } from '@stellar/stellar-sdk';
+// Contract interaction utilities
+// Uses dynamic imports to avoid SSR issues with Stellar SDK
+
 import { getNetwork, getAccountInfo } from './stellar';
 import { TokenConfig, VestingConfig, AirdropConfig } from '@/types';
 
@@ -8,18 +10,22 @@ const AIRDROP_CONTRACT_WASM = 'airdrop_contract_id_placeholder';
 
 export class ContractService {
   private network: 'testnet' | 'mainnet';
-  private rpc: SorobanRpc.Server;
+  private rpcUrl: string;
 
   constructor(network: 'testnet' | 'mainnet') {
     this.network = network;
     const { rpcUrl } = getNetwork(network);
-    this.rpc = new SorobanRpc.Server(rpcUrl);
+    this.rpcUrl = rpcUrl;
   }
 
   async deployToken(config: TokenConfig, creatorPublicKey: string): Promise<string> {
     try {
+      // Dynamically import Stellar SDK
+      const { Contract, SorobanRpc, TransactionBuilder } = await import('@stellar/stellar-sdk');
+      
       const account = await getAccountInfo(creatorPublicKey, this.network);
       const { networkPassphrase } = getNetwork(this.network);
+      const rpc = new SorobanRpc.Server(this.rpcUrl);
 
       const contract = new Contract(TOKEN_CONTRACT_WASM);
       const operation = contract.call(
@@ -41,7 +47,7 @@ export class ContractService {
         .setTimeout(30)
         .build();
 
-      const prepared = await this.rpc.prepareTransaction(transaction);
+      const prepared = await rpc.prepareTransaction(transaction);
       return prepared.toXDR();
     } catch (error) {
       throw new Error('Failed to prepare token deployment');
@@ -54,8 +60,12 @@ export class ContractService {
     creatorPublicKey: string
   ): Promise<string> {
     try {
+      // Dynamically import Stellar SDK
+      const { Contract, SorobanRpc, TransactionBuilder } = await import('@stellar/stellar-sdk');
+      
       const account = await getAccountInfo(creatorPublicKey, this.network);
       const { networkPassphrase } = getNetwork(this.network);
+      const rpc = new SorobanRpc.Server(this.rpcUrl);
 
       const contract = new Contract(VESTING_CONTRACT_WASM);
       const operation = contract.call(
@@ -78,7 +88,7 @@ export class ContractService {
         .setTimeout(30)
         .build();
 
-      const prepared = await this.rpc.prepareTransaction(transaction);
+      const prepared = await rpc.prepareTransaction(transaction);
       return prepared.toXDR();
     } catch (error) {
       throw new Error('Failed to prepare vesting deployment');
@@ -91,8 +101,12 @@ export class ContractService {
     creatorPublicKey: string
   ): Promise<string> {
     try {
+      // Dynamically import Stellar SDK
+      const { Contract, SorobanRpc, TransactionBuilder } = await import('@stellar/stellar-sdk');
+      
       const account = await getAccountInfo(creatorPublicKey, this.network);
       const { networkPassphrase } = getNetwork(this.network);
+      const rpc = new SorobanRpc.Server(this.rpcUrl);
 
       const contract = new Contract(AIRDROP_CONTRACT_WASM);
       const recipients = config.recipients.map(r => [r.address, r.amount]);
@@ -114,7 +128,7 @@ export class ContractService {
         .setTimeout(30)
         .build();
 
-      const prepared = await this.rpc.prepareTransaction(transaction);
+      const prepared = await rpc.prepareTransaction(transaction);
       return prepared.toXDR();
     } catch (error) {
       throw new Error('Failed to prepare airdrop deployment');
