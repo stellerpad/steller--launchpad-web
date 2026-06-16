@@ -3,6 +3,7 @@ import { ExternalLink, Calendar, User } from 'lucide-react';
 import { TokenLaunch } from '@/types';
 import { formatDate, formatCurrency } from '@/lib/format';
 import { shortenAddress } from '@/lib/stellar';
+import { Badge } from '@/components/ui/Badge';
 
 interface LaunchCardProps {
   launch: TokenLaunch;
@@ -21,10 +22,10 @@ export function LaunchCard({ launch }: LaunchCardProps) {
         </div>
         <div className="flex items-center space-x-1">
           {launch.vestingAddress && (
-            <div className="w-2 h-2 bg-blue-500 rounded-full" title="Has vesting schedule" />
+            <Badge variant="info" size="sm">Vesting</Badge>
           )}
           {launch.airdropAddress && (
-            <div className="w-2 h-2 bg-green-500 rounded-full" title="Has airdrop campaign" />
+            <Badge variant="success" size="sm">Airdrop</Badge>
           )}
         </div>
       </div>
