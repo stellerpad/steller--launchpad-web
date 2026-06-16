@@ -59,14 +59,16 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const value: WalletContextType = {
+    ...wallet,
+    connect,
+    disconnect,
+    isLoading,
+    error
+  };
+
   return (
-    <WalletContext.Provider value={{
-      ...wallet,
-      connect,
-      disconnect,
-      isLoading,
-      error
-    }}>
+    <WalletContext.Provider value={value}>
       {children}
     </WalletContext.Provider>
   );
