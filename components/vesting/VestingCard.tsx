@@ -44,7 +44,7 @@ export function VestingCard({ schedule, tokenSymbol, onClaim }: VestingCardProps
             <span className="text-sm font-medium">{getStatusText()}</span>
           </div>
           {tokenSymbol && (
-            <div className="text-lg font-semibold">{tokenSymbol} Vesting</div>
+            <div className="text-lg font-semibold">{tokenSymbol} Vesting Schedule</div>
           )}
         </div>
         
