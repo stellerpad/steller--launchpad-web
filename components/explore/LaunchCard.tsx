@@ -10,20 +10,21 @@ interface LaunchCardProps {
 
 export function LaunchCard({ launch }: LaunchCardProps) {
   const totalSupplyFormatted = formatCurrency(parseInt(launch.config.totalSupply) / Math.pow(10, launch.config.decimals));
+  const hasFeatures = launch.vestingAddress || launch.airdropAddress;
 
   return (
-    <div className="bg-card border border-border rounded-lg p-6 hover:border-accent transition-colors">
+    <div className="bg-card border border-border rounded-lg p-6 hover:border-accent transition-colors group">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold mb-1">{launch.config.name}</h3>
+          <h3 className="text-lg font-semibold mb-1 group-hover:text-primary transition-colors">{launch.config.name}</h3>
           <p className="text-sm text-muted-foreground">{launch.config.symbol}</p>
         </div>
         <div className="flex items-center space-x-1">
           {launch.vestingAddress && (
-            <div className="w-2 h-2 bg-blue-500 rounded-full" title="Has vesting" />
+            <div className="w-2 h-2 bg-blue-500 rounded-full" title="Has vesting schedule" />
           )}
           {launch.airdropAddress && (
-            <div className="w-2 h-2 bg-green-500 rounded-full" title="Has airdrop" />
+            <div className="w-2 h-2 bg-green-500 rounded-full" title="Has airdrop campaign" />
           )}
         </div>
       </div>
