@@ -222,17 +222,23 @@ export default function TokenDetailPage() {
               />
               <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                 <span>Created by {shortenAddress(launch.creator)}</span>
+                <span>•</span>
+                <span>{formatDate(launch.launchDate)}</span>
                 {launch.config.website && (
-                  <a
-                    href={launch.config.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center hover:text-foreground transition-colors"
-                  >
-                    <Globe className="w-4 h-4 mr-1" />
-                    Website
-                  </a>
+                  <>
+                    <span>•</span>
+                    <a
+                      href={launch.config.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center hover:text-foreground transition-colors"
+                    >
+                      <Globe className="w-4 h-4 mr-1" />
+                      Website
+                    </a>
+                  </>
                 )}
+                <span>•</span>
                 <a
                   href={`https://stellar.expert/explorer/testnet/contract/${launch.tokenAddress}`}
                   target="_blank"
