@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { TokenConfig } from '@/types';
+import { validateTokenSymbol, validateAmount } from '@/lib/validation';
+import { DEFAULT_TOKEN_CONFIG } from '@/lib/constants';
 
 interface TokenConfigStepProps {
   config: TokenConfig;
@@ -19,14 +21,14 @@ export function TokenConfigStep({ config, onChange, onNext }: TokenConfigStepPro
       newErrors.name = 'Token name is required';
     }
 
-    if (!config.symbol.trim()) {
-      newErrors.symbol = 'Token symbol is required';
-    } else if (config.symbol.length > 5) {
-      newErrors.symbol = 'Symbol must be 5 characters or less';
+    const symbolValidation = validateTokenSymbol(config.symbol);
+    if (!symbolValidation.isValid) {
+      newErrors.symbol = symbolValidation.error!;
     }
 
-    if (!config.totalSupply || isNaN(Number(config.totalSupply))) {
-      newErrors.totalSupply = 'Valid total supply is required';
+    const amountValidation = validateAmount(config.totalSupply);
+    if (!amountValidation.isValid) {
+      newErrors.totalSupply = amountValidation.error!;
     }
 
     setErrors(newErrors);
