@@ -1,5 +1,6 @@
 export function formatNumber(num: number | string, decimals = 2): string {
   const n = typeof num === 'string' ? parseFloat(num) : num;
+  if (isNaN(n)) return '0';
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 0,
     maximumFractionDigits: decimals,
@@ -8,6 +9,7 @@ export function formatNumber(num: number | string, decimals = 2): string {
 
 export function formatCurrency(amount: number | string): string {
   const n = typeof amount === 'string' ? parseFloat(amount) : amount;
+  if (isNaN(n)) return '0';
   if (n >= 1e9) return `${(n / 1e9).toFixed(1)}B`;
   if (n >= 1e6) return `${(n / 1e6).toFixed(1)}M`;
   if (n >= 1e3) return `${(n / 1e3).toFixed(1)}K`;
