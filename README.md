@@ -28,6 +28,45 @@ A Next.js web application where anyone can launch tokens on Stellar, configure v
 - **Detailed Token Pages**: Complete token information with tabs for overview, vesting, airdrops, and holders
 - **Stellar Integration**: Direct links to Stellar Expert for on-chain verification
 
+## ⭐ Stellar Integration
+
+### Networks
+
+| Network | Horizon URL | Soroban RPC URL |
+|---------|------------|------------------|
+| Testnet | `https://horizon-testnet.stellar.org` | `https://soroban-testnet.stellar.org` |
+| Mainnet | `https://horizon.stellar.org` | `https://soroban-rpc.stellar.org` |
+
+### Soroban Smart Contracts
+
+All core logic runs on [Soroban](https://soroban.stellar.org) — Stellar's smart contract platform:
+
+- **Token Contract** — Deploys SEP-41 compatible tokens with optional mint/burn capabilities
+- **Vesting Contract** — Creates on-chain vesting schedules (linear, cliff, hybrid) with `create_schedule`
+- **Airdrop Contract** — Manages distribution campaigns (equal, weighted, claimable) with `create_campaign`
+
+Contracts are called via `@stellar/stellar-sdk` using `Contract.call()` and `SorobanRpc.Server.prepareTransaction()`. Transactions are signed client-side by Freighter and submitted to the network.
+
+### Wallet — Freighter
+
+[Freighter](https://freighter.app) is the only supported wallet. It handles:
+- Account public key retrieval (`getPublicKey`)
+- Network detection (`getNetwork` → `TESTNET` / `MAINNET`)
+- XDR transaction signing (`signTransaction`)
+
+All Freighter and Stellar SDK calls use dynamic imports to prevent SSR issues in Next.js.
+
+### Address Formats
+
+- **User accounts**: `G...` (56-char base32, validated via `/^G[A-Z2-7]{55}$/`)
+- **Contract addresses**: `C...` (56-char base32, validated via `/^C[A-Z2-7]{55}$/`)
+
+### On-chain Verification
+
+All deployed contracts and accounts link to [Stellar Expert](https://stellar.expert) for independent on-chain verification.
+
+---
+
 ## 🛠 Tech Stack
 
 - **Framework**: Next.js 14 with App Router
