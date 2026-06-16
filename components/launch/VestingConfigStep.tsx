@@ -13,6 +13,7 @@ interface VestingConfigStepProps {
 export function VestingConfigStep({ config, onChange, onNext, onBack }: VestingConfigStepProps) {
   const [enableVesting, setEnableVesting] = useState(!!config);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const handleEnableChange = (enabled: boolean) => {
     setEnableVesting(enabled);
@@ -85,6 +86,15 @@ export function VestingConfigStep({ config, onChange, onNext, onBack }: VestingC
 
       {enableVesting && config && (
         <div className="space-y-4 border border-border rounded-lg p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-sm font-medium">Vesting Configuration</h4>
+            <button
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className="text-xs text-primary hover:text-primary/80 transition-colors"
+            >
+              {showAdvanced ? 'Hide Advanced' : 'Show Advanced'}
+            </button>
+          </div>
           <div>
             <label className="block text-sm font-medium mb-2">
               Beneficiary Address *
@@ -161,7 +171,7 @@ export function VestingConfigStep({ config, onChange, onNext, onBack }: VestingC
             </div>
           </div>
 
-          {config.vestingType !== 'linear' && (
+          {(config.vestingType !== 'linear' || showAdvanced) && (
             <div>
               <label className="block text-sm font-medium mb-2">
                 Cliff Date
