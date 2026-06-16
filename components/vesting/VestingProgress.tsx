@@ -17,10 +17,10 @@ export function VestingProgress({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between text-sm">
+      <div className="flex items-center justify-between">
         <span className="text-muted-foreground">Vesting Progress</span>
-        <span className="font-medium">
-          {formatPercentage(releasedPercentage / 100)} released
+        <span className="font-medium text-sm">
+          {formatPercentage(releasedPercentage / 100)}
         </span>
       </div>
 
