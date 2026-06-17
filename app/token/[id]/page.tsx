@@ -126,7 +126,7 @@ export default function TokenDetailPage() {
             ) : (
               <EmptyState
                 title="No Vesting Schedules"
-                description="This token doesn't have any vesting schedules configured."
+                description="This token doesn&apos;t have any vesting schedules configured."
               />
             )}
           </div>
@@ -147,7 +147,7 @@ export default function TokenDetailPage() {
             ) : (
               <EmptyState
                 title="No Airdrop Campaigns"
-                description="This token doesn't have any airdrop campaigns configured."
+                description="This token doesn&apos;t have any airdrop campaigns configured."
               />
             )}
           </div>
