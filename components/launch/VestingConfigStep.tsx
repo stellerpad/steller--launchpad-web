@@ -47,7 +47,7 @@ export function VestingConfigStep({ config, onChange, onNext, onBack }: VestingC
       newErrors.amount = 'Valid vesting amount is required';
     }
 
-    if (config?.startDate >= config?.endDate) {
+    if (config?.startDate && config?.endDate && config.startDate >= config.endDate) {
       newErrors.endDate = 'End date must be after start date';
     }
 

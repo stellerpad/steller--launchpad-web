@@ -16,6 +16,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { shortenAddress } from '@/lib/stellar';
+import { formatDate } from '@/lib/format';
 
 export default function TokenDetailPage() {
   const params = useParams();
@@ -61,7 +62,7 @@ export default function TokenDetailPage() {
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
         <ErrorState
           title="Token Not Found"
-          message="The token you're looking for doesn't exist or has been removed."
+          message="The token you&apos;re looking for doesn&apos;t exist or has been removed."
         />
       </div>
     );

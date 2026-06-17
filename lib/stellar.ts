@@ -21,9 +21,9 @@ export function getNetwork(network: 'testnet' | 'mainnet') {
 export async function getAccountInfo(publicKey: string, network: 'testnet' | 'mainnet') {
   try {
     // Dynamically import Stellar SDK only when needed
-    const { Server } = await import('@stellar/stellar-sdk');
+    const { Horizon } = await import('@stellar/stellar-sdk');
     const { horizonUrl } = getNetwork(network);
-    const server = new Server(horizonUrl);
+    const server = new Horizon.Server(horizonUrl);
     return await server.loadAccount(publicKey);
   } catch (error) {
     throw new Error('Failed to load account');

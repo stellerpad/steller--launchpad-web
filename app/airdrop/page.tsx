@@ -64,7 +64,7 @@ export default function AirdropPage() {
         ) : (
           <EmptyState
             title="No Airdrop Campaigns"
-            description="You haven't created any airdrop campaigns yet. Create one to distribute tokens to multiple recipients."
+            description="You haven&apos;t created any airdrop campaigns yet. Create one to distribute tokens to multiple recipients."
             action={
               <Link
                 href="/airdrop/new"

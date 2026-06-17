@@ -83,7 +83,7 @@ export function AirdropConfigStep({ config, onChange, onNext, onBack }: AirdropC
       newErrors.recipients = 'At least one recipient is required';
     }
 
-    if (config?.startDate >= (config?.endDate || new Date())) {
+    if (config?.startDate && config.startDate >= (config?.endDate || new Date())) {
       newErrors.endDate = 'End date must be after start date';
     }
 

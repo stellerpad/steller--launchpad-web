@@ -64,7 +64,7 @@ export default function VestingPage() {
         ) : (
           <EmptyState
             title="No Vesting Schedules"
-            description="You don't have any vesting schedules yet. Create one to start vesting tokens over time."
+            description="You don&apos;t have any vesting schedules yet. Create one to start vesting tokens over time."
             action={
               <Link
                 href="/vesting/new"

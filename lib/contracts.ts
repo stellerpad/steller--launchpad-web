@@ -20,8 +20,7 @@ export class ContractService {
 
   async deployToken(config: TokenConfig, creatorPublicKey: string): Promise<string> {
     try {
-      // Dynamically import Stellar SDK
-      const { Contract, SorobanRpc, TransactionBuilder } = await import('@stellar/stellar-sdk');
+      const { Contract, SorobanRpc, TransactionBuilder, nativeToScVal, xdr } = await import('@stellar/stellar-sdk');
       
       const account = await getAccountInfo(creatorPublicKey, this.network);
       const { networkPassphrase } = getNetwork(this.network);
@@ -30,13 +29,15 @@ export class ContractService {
       const contract = new Contract(TOKEN_CONTRACT_WASM);
       const operation = contract.call(
         'initialize',
-        config.name,
-        config.symbol,
-        config.decimals,
-        config.totalSupply,
-        creatorPublicKey,
-        config.mintable,
-        config.burnable
+        nativeToScVal(config.name, { type: 'string' }),
+        nativeToScVal(config.symbol, { type: 'string' }),
+        nativeToScVal(config.decimals, { type: 'u32' }),
+        nativeToScVal(BigInt(config.totalSupply), { type: 'i128' }),
+        xdr.ScVal.scvAddress(xdr.ScAddress.scAddressTypeAccount(
+          xdr.PublicKey.publicKeyTypeEd25519(Buffer.from(creatorPublicKey, 'base64'))
+        )),
+        nativeToScVal(config.mintable, { type: 'bool' }),
+        nativeToScVal(config.burnable, { type: 'bool' })
       );
 
       const transaction = new TransactionBuilder(account, {
@@ -60,8 +61,7 @@ export class ContractService {
     creatorPublicKey: string
   ): Promise<string> {
     try {
-      // Dynamically import Stellar SDK
-      const { Contract, SorobanRpc, TransactionBuilder } = await import('@stellar/stellar-sdk');
+      const { Contract, SorobanRpc, TransactionBuilder, nativeToScVal } = await import('@stellar/stellar-sdk');
       
       const account = await getAccountInfo(creatorPublicKey, this.network);
       const { networkPassphrase } = getNetwork(this.network);
@@ -70,14 +70,14 @@ export class ContractService {
       const contract = new Contract(VESTING_CONTRACT_WASM);
       const operation = contract.call(
         'create_schedule',
-        tokenAddress,
-        config.beneficiary,
-        config.amount,
-        Math.floor(config.startDate.getTime() / 1000),
-        config.cliffDate ? Math.floor(config.cliffDate.getTime() / 1000) : 0,
-        Math.floor(config.endDate.getTime() / 1000),
-        config.vestingType,
-        config.revocable
+        nativeToScVal(tokenAddress, { type: 'address' }),
+        nativeToScVal(config.beneficiary, { type: 'address' }),
+        nativeToScVal(BigInt(config.amount), { type: 'i128' }),
+        nativeToScVal(Math.floor(config.startDate.getTime() / 1000), { type: 'u64' }),
+        nativeToScVal(config.cliffDate ? Math.floor(config.cliffDate.getTime() / 1000) : 0, { type: 'u64' }),
+        nativeToScVal(Math.floor(config.endDate.getTime() / 1000), { type: 'u64' }),
+        nativeToScVal(config.vestingType, { type: 'string' }),
+        nativeToScVal(config.revocable, { type: 'bool' })
       );
 
       const transaction = new TransactionBuilder(account, {
@@ -101,23 +101,24 @@ export class ContractService {
     creatorPublicKey: string
   ): Promise<string> {
     try {
-      // Dynamically import Stellar SDK
-      const { Contract, SorobanRpc, TransactionBuilder } = await import('@stellar/stellar-sdk');
+      const { Contract, SorobanRpc, TransactionBuilder, nativeToScVal } = await import('@stellar/stellar-sdk');
       
       const account = await getAccountInfo(creatorPublicKey, this.network);
       const { networkPassphrase } = getNetwork(this.network);
       const rpc = new SorobanRpc.Server(this.rpcUrl);
 
       const contract = new Contract(AIRDROP_CONTRACT_WASM);
-      const recipients = config.recipients.map(r => [r.address, r.amount]);
+      const recipients = nativeToScVal(
+        config.recipients.map(r => ({ address: r.address, amount: BigInt(r.amount) }))
+      );
       
       const operation = contract.call(
         'create_campaign',
-        tokenAddress,
-        config.type,
+        nativeToScVal(tokenAddress, { type: 'address' }),
+        nativeToScVal(config.type, { type: 'string' }),
         recipients,
-        Math.floor(config.startDate.getTime() / 1000),
-        config.endDate ? Math.floor(config.endDate.getTime() / 1000) : 0
+        nativeToScVal(Math.floor(config.startDate.getTime() / 1000), { type: 'u64' }),
+        nativeToScVal(config.endDate ? Math.floor(config.endDate.getTime() / 1000) : 0, { type: 'u64' })
       );
 
       const transaction = new TransactionBuilder(account, {
