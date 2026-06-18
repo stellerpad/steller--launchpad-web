@@ -121,7 +121,7 @@ stellar-launchpad-web/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-org/stellar-launchpad-web.git
+git clone https://github.com/stellerpad/steller--launchpad-web.git
 cd stellar-launchpad-web
 ```
 
@@ -187,8 +187,8 @@ Deployments trigger automatically on every push to `main`. Netlify handles stati
 
 This is part of a 3-repository ecosystem:
 
-- **Core Contracts**: [stellar-launchpad-core](https://github.com/your-org/stellar-launchpad-core) - Soroban smart contracts
-- **Documentation**: [stellar-launchpad-docs](https://github.com/your-org/stellar-launchpad-docs) - Technical documentation
+- **Core Contracts**: [stellar-launchpad-core](https://github.com/stellerpad/stellar-launchpad-core) - Soroban smart contracts
+- **Documentation**: [stellar-launchpad-docs](https://github.com/stellerpad/stellar-launchpad-docs) - Technical documentation
 
 ## 🎨 Design Features
 
@@ -224,4 +224,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Create an issue in this repository for bugs or feature requests
 - Join our community discussions
-- Check the [documentation repository](https://github.com/your-org/stellar-launchpad-docs) for detailed guides
+- Check the [documentation repository](https://github.com/stellerpad/stellar-launchpad-docs) for detailed guides
