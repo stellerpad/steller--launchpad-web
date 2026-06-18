@@ -1,14 +1,34 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { VestingSchedule } from '@/types';
 import { useWallet } from './useWallet';
+import { ContractService } from '@/lib/contracts';
 
 export function useVesting() {
-  const { publicKey } = useWallet();
+  const { publicKey, network } = useWallet();
   const [schedules, setSchedules] = useState<VestingSchedule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const contractService = useMemo(() => new ContractService(network), [network]);
+
+  const loadSchedules = async () => {
+    if (!publicKey) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const fetchedSchedules = await contractService.fetchVestingSchedules(publicKey);
+      setSchedules(fetchedSchedules);
+    } catch (err) {
+      setError('Failed to load vesting schedules');
+      setSchedules([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!publicKey) {
@@ -17,45 +37,21 @@ export function useVesting() {
       return;
     }
 
-    const mockSchedules: VestingSchedule[] = [
-      {
-        id: '1',
-        tokenAddress: 'CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQAMAUGH2WCF',
-        beneficiary: publicKey,
-        totalAmount: '100000000000',
-        releasedAmount: '25000000000',
-        claimableAmount: '15000000000',
-        config: {
-          beneficiary: publicKey,
-          amount: '100000000000',
-          vestingType: 'linear',
-          startDate: new Date('2024-01-15'),
-          endDate: new Date('2024-07-15'),
-          revocable: false
-        }
-      }
-    ];
-
-    setTimeout(() => {
-      setSchedules(mockSchedules);
-      setIsLoading(false);
-    }, 800);
-  }, [publicKey]);
+    loadSchedules();
+  }, [publicKey, contractService]);
 
   const claimVested = async (scheduleId: string) => {
+    if (!publicKey) {
+      setError('Wallet not connected');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
     try {
-      setIsLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setSchedules(prev => prev.map(schedule => 
-        schedule.id === scheduleId 
-          ? { 
-              ...schedule, 
-              releasedAmount: (BigInt(schedule.releasedAmount) + BigInt(schedule.claimableAmount)).toString(),
-              claimableAmount: '0'
-            }
-          : schedule
-      ));
+      await contractService.claimVested(scheduleId, publicKey);
+      await loadSchedules();
     } catch (err) {
       setError('Failed to claim vested tokens');
     } finally {

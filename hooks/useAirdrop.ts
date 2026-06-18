@@ -1,14 +1,34 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { AirdropCampaign } from '@/types';
 import { useWallet } from './useWallet';
+import { ContractService } from '@/lib/contracts';
 
 export function useAirdrop() {
-  const { publicKey } = useWallet();
+  const { publicKey, network } = useWallet();
   const [campaigns, setCampaigns] = useState<AirdropCampaign[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const contractService = useMemo(() => new ContractService(network), [network]);
+
+  const loadCampaigns = async () => {
+    if (!publicKey) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const fetchedCampaigns = await contractService.fetchAirdropCampaigns(publicKey);
+      setCampaigns(fetchedCampaigns);
+    } catch (err) {
+      setError('Failed to load airdrop campaigns');
+      setCampaigns([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!publicKey) {
@@ -17,46 +37,21 @@ export function useAirdrop() {
       return;
     }
 
-    const mockCampaigns: AirdropCampaign[] = [
-      {
-        id: '1',
-        tokenAddress: 'CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQAMAUGH2WCF',
-        creator: publicKey,
-        config: {
-          type: 'weighted',
-          recipients: [
-            { address: 'GAHK7EEG2WWHVKDNT4CEQFZGKF2LGDSW2IVM4S5DP42RBW3K6BTODB4A', amount: '1000000000' },
-            { address: 'GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37', amount: '2000000000' }
-          ],
-          startDate: new Date('2024-02-01'),
-          endDate: new Date('2024-03-01')
-        },
-        distributedAmount: '1500000000',
-        totalAmount: '3000000000',
-        status: 'active'
-      }
-    ];
-
-    setTimeout(() => {
-      setCampaigns(mockCampaigns);
-      setIsLoading(false);
-    }, 800);
-  }, [publicKey]);
+    loadCampaigns();
+  }, [publicKey, contractService]);
 
   const distributeCampaign = async (campaignId: string) => {
+    if (!publicKey) {
+      setError('Wallet not connected');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
     try {
-      setIsLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      setCampaigns(prev => prev.map(campaign => 
-        campaign.id === campaignId 
-          ? { 
-              ...campaign, 
-              distributedAmount: campaign.totalAmount,
-              status: 'completed' as const
-            }
-          : campaign
-      ));
+      await contractService.distributeCampaign(campaignId, publicKey);
+      await loadCampaigns();
     } catch (err) {
       setError('Failed to distribute airdrop');
     } finally {
