@@ -3,9 +3,8 @@
 
 export async function connectWallet() {
   try {
-    // Dynamically import freighter API
     const { isConnected, getPublicKey, getNetwork } = await import('@stellar/freighter-api');
-    
+
     const isWalletConnected = await isConnected();
     if (!isWalletConnected) {
       throw new Error('Freighter wallet not found');
@@ -13,7 +12,7 @@ export async function connectWallet() {
 
     const publicKey = await getPublicKey();
     const network = await getNetwork();
-    
+
     return {
       publicKey,
       network: network === 'TESTNET' ? 'testnet' as const : 'mainnet' as const
@@ -23,11 +22,17 @@ export async function connectWallet() {
   }
 }
 
-export async function signTransactionWithFreighter(xdr: string) {
+export async function signTransactionWithFreighter(
+  xdr: string,
+  opts?: {
+    network?: string;
+    accountToSign?: string;
+    networkPassphrase?: string;
+  }
+) {
   try {
-    // Dynamically import freighter API
     const { signTransaction } = await import('@stellar/freighter-api');
-    const result = await signTransaction(xdr);
+    const result = await signTransaction(xdr, opts || {});
     return result;
   } catch (error) {
     throw new Error('Transaction signing failed');
