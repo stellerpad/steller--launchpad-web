@@ -1,5 +1,9 @@
 # Stellar Launchpad Web
 
+🌐 **Live App**: [https://stellerlaunchpad.netlify.app](https://stellerlaunchpad.netlify.app)
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/stellar-launchpad/deploy-status)](https://stellerlaunchpad.netlify.app)
+
 A Next.js web application where anyone can launch tokens on Stellar, configure vesting schedules, run airdrops, and browse all existing token launches.
 
 ## 🚀 Features
@@ -168,6 +172,16 @@ yarn dev
 2. **Filter Results**: Search by name, symbol, or launch date
 3. **View Details**: Click on tokens to see comprehensive information
 4. **Check On-chain**: Use Stellar Expert links for blockchain verification
+
+## 🌐 Deployment
+
+The app is live on Netlify:
+
+| Environment | URL |
+|-------------|-----|
+| Production | [https://stellerlaunchpad.netlify.app](https://stellerlaunchpad.netlify.app) |
+
+Deployments trigger automatically on every push to `main`. Netlify handles static export and CDN distribution.
 
 ## 🔗 Sister Repositories
 
